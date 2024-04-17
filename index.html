@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .code-output-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        .code-output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre-wrap;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            position: relative;
+        }
+        pre {
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0;
+        }
+        button.copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button.copy-button:hover {
+            background-color: #45a049;
+        }
+        button.copy-button:focus {
+            outline: none;
+        }
+        button.copy-button:active {
+            transform: translateY(1px);
+        }
+        button.generate-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button.generate-button:hover {
+            background-color: #45a049;
+        }
+        button.generate-button:focus {
+            outline: none;
+        }
+        /* New styles for input fields */
+        input[type="text"], input[type="file"], select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Generator</h1>
+
+    <div>
+        <label for="textInput">Enter Text:</label>
+        <input type="text" id="textInput" placeholder="Enter your text here" required>
+    </div>
+
+    <div>
+        <label for="linkInput">Enter Link:</label>
+        <input type="text" id="linkInput" placeholder="Enter a link">
+    </div>
+
+    <div>
+        <label for="fileInput">Upload File:</label>
+        <input type="file" id="fileInput">
+    </div>
+
+    <div>
+        <label for="languageSelect">Select Programming Language:</label>
+        <select id="languageSelect">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="js">JavaScript</option>
+            <option value="react">React</option>
+            <option value="angular">Angular</option>
+            <option value="swift">Swift</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+            <option value="python">Python</option>
+            <option value="csharp">C#</option>
+            <option value="go">Go</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="php">PHP</option>
+            <option value="r">R</option>
+            <option value="ruby">Ruby</option>
+            <option value="matlab">Matlab</option>
+            <option value="typescript">TypeScript</option>
+            <option value="scala">Scala</option>
+            <option value="sql">SQL</option>
+            <option value="nosql">NoSQL</option>
+            <option value="rust">Rust</option>
+            <option value="perl">Perl</option>
+        </select>
+    </div>
+
+    <button class="generate-button" onclick="generateCode()">Generate Code</button>
+
+    <div class="code-output-container">
+        <div class="code-output" id="codeOutput">
+            <!-- Generated code will appear here -->
+        </div>
+        <button class="copy-button" onclick="copyCode()">Copy Code</button>
+    </div>
+
+    <footer>
+        <p>Designed and built by G.Thangella &copy; 2024. All rights reserved.</p>
+        <p>This website is protected by copyright law. Unauthorized use or modification of the code is prohibited.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-kotlin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-matlab.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-scala.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-perl.min.js"></script>
+
+    <script>
+        function generateCode() {
+            var inputText = document.getElementById('textInput').value.trim();
+            var linkInput = document.getElementById('linkInput').value.trim();
+            var selectedLanguage = document.getElementById('languageSelect').value;
+            var fileInput = document.getElementById('fileInput').files[0];
+
+            var generatedCode = '';
+
+            switch (selectedLanguage) {
+                case 'html':
+                    generatedCode = generateHTML(inputText, linkInput, fileInput);
+                    break;
+                case 'css':
+                    generatedCode = generateCSS(inputText, linkInput, fileInput);
+                    break;
+                case 'js':
+                    generatedCode = generateJS(inputText, linkInput, fileInput);
+                    break;
+                case 'react':
+                    generatedCode = generateReact(inputText, linkInput, fileInput);
+                    break;
+                case 'angular':
+                    generatedCode = generateAngular(inputText, linkInput, fileInput);
+                    break;
+                case 'swift':
+                    generatedCode = generateSwift(inputText, linkInput, fileInput);
+                    break;
+                case 'c':
+                    generatedCode = generateC(inputText, linkInput, fileInput);
+                    break;
+                case 'cpp':
+                    generatedCode = generateCpp(inputText, linkInput, fileInput);
+                    break;
+                case 'java':
+                    generatedCode = generateJava(inputText, linkInput, fileInput);
+                    break;
+                case 'python':
+                    generatedCode = generatePython(inputText, linkInput, fileInput);
+                    break;
+                case 'csharp':
+                    generatedCode = generateCSharp(inputText, linkInput, fileInput);
+                    break;
+                case 'go':
+                    generatedCode = generateGo(inputText, linkInput, fileInput);
+                    break;
+                case 'kotlin':
+                    generatedCode = generateKotlin(inputText, linkInput, fileInput);
+                    break;
+                case 'php':
+                    generatedCode = generatePHP(inputText, linkInput, fileInput);
+                    break;
+                case 'r':
+                    generatedCode = generateR(inputText, linkInput, fileInput);
+                    break;
+                case 'ruby':
+                    generatedCode = generateRuby(inputText, linkInput, fileInput);
+                    break;
+                case 'matlab':
+                    generatedCode = generateMatlab(inputText, linkInput, fileInput);
+                    break;
+                case 'typescript':
+                    generatedCode = generateTypeScript(inputText, linkInput, fileInput);
+                    break;
+                case 'scala':
+                    generatedCode = generateScala(inputText, linkInput, fileInput);
+                    break;
+                case 'sql':
+                    generatedCode = generateSQL(inputText, linkInput, fileInput);
+                    break;
+                case 'nosql':
+                    generatedCode = generateNoSQL(inputText, linkInput, fileInput);
+                    break;
+                case 'rust':
+                    generatedCode = generateRust(inputText, linkInput, fileInput);
+                    break;
+                case 'perl':
+                    generatedCode = generatePerl(inputText, linkInput, fileInput);
+                    break;
+                default:
+                    break;
+            }
+
+            displayCode(generatedCode, selectedLanguage);
+        }
+
+        function generateHTML(inputText, linkInput, fileInput) {
+            var code = '<p>' + inputText + '</p>';
+            if (linkInput) {
+                code += '<a href="' + linkInput + '">' + linkInput + '</a>';
+            }
+            if (fileInput) {
+                code += '\n\n<!-- File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes -->';
+            }
+            return code;
+        }
+
+        function generateCSS(inputText, linkInput, fileInput) {
+            var code = 'p { color: red; }';
+            if (linkInput) {
+                code += '\n\n/* Link: ' + linkInput + ' */';
+            }
+            if (fileInput) {
+                code += '\n\n/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */';
+            }
+            return code;
+        }
+
+        function generateJS(inputText, linkInput, fileInput) {
+            var code = 'console.log("' + inputText + '");';
+            if (linkInput) {
+                code += '\nwindow.open("' + linkInput + '");';
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateReact(inputText, linkInput, fileInput) {
+            var code = 'import React from "react";\n\nfunction App() {\n  return (\n    <div>\n      <p>' + inputText + '</p>\n      ' + (linkInput ? '<a href="' + linkInput + '">' + linkInput + '</a>' : '') + '\n    </div>\n  );\n}\n\nexport default App;';
+            if (fileInput) {
+                code += '\n\n{/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */}';
+            }
+            return code;
+        }
+
+        function generateAngular(inputText, linkInput, fileInput) {
+            var code = 'import { Component } from "@angular/core";\n\n@Component({\n  selector: "app-root",\n  template: `<p>' + inputText + '</p>' + (linkInput ? '<a href="' + linkInput + '">' + linkInput + '</a>' : '') + '`\n})\nexport class AppComponent { }';
+            if (fileInput) {
+                code += '\n\n<!-- File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes -->';
+            }
+            return code;
+        }
+
+        function generateSwift(inputText, linkInput, fileInput) {
+            var code = 'import UIKit\n\nclass ViewController: UIViewController {\n    override func viewDidLoad() {\n        super.viewDidLoad()\n        // Do any additional setup after loading the view.\n        let label = UILabel()\n        label.text = "' + inputText + '"\n        self.view.addSubview(label)';
+            if (linkInput) {
+                code += '\n        let link = UIButton()\n        link.setTitle("' + linkInput + '", for: .normal)\n        link.addTarget(self, action: #selector(openLink), for: .touchUpInside)\n        self.view.addSubview(link)';
+            }
+            code += '\n    }\n\n    @objc func openLink() {\n        if let url = URL(string: "' + linkInput + '") {\n            UIApplication.shared.open(url, options: [:], completionHandler: nil)\n        }\n    }\n}';
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateC(inputText, linkInput, fileInput) {
+            var code = '#include <stdio.h>\n\nint main() {\n    printf("%s\\n", "' + inputText + '");\n    return 0;\n}';
+            if (linkInput) {
+                code += '\n\n/* Link: ' + linkInput + ' */';
+            }
+            if (fileInput) {
+                code += '\n\n/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */';
+            }
+            return code;
+        }
+
+        function generateCpp(inputText, linkInput, fileInput) {
+            var code = '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "' + inputText + '" << endl;\n    return 0;\n}';
+            if (linkInput) {
+                code += '\n\n/* Link: ' + linkInput + ' */';
+            }
+            if (fileInput) {
+                code += '\n\n/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */';
+            }
+            return code;
+        }
+
+        function generateJava(inputText, linkInput, fileInput) {
+            var code = 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("' + inputText + '");\n    }\n}';
+            if (linkInput) {
+                code += '\n\n/* Link: ' + linkInput + ' */';
+            }
+            if (fileInput) {
+                code += '\n\n/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */';
+            }
+            return code;
+        }
+
+        function generatePython(inputText, linkInput, fileInput) {
+            var code = 'print("' + inputText + '")';
+            if (linkInput) {
+                code += '\n\n# Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n# File data:\n# ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateCSharp(inputText, linkInput, fileInput) {
+            var code = 'using System;\n\nclass Program\n{\n    static void Main()\n    {\n        Console.WriteLine("' + inputText + '");\n    }\n}';
+            if (linkInput) {
+                code += '\n\n/* Link: ' + linkInput + ' */';
+            }
+            if (fileInput) {
+                code += '\n\n/* File data:\n * ' + fileInput.name + ' - ' + fileInput.size + ' bytes */';
+            }
+            return code;
+        }
+
+        // New functions for additional languages
+        function generateGo(inputText, linkInput, fileInput) {
+            var code = 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("' + inputText + '")\n}';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateKotlin(inputText, linkInput, fileInput) {
+            var code = 'fun main() {\n\tprintln("' + inputText + '")\n}';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generatePHP(inputText, linkInput, fileInput) {
+            var code = '<?php\n\necho "' + inputText + '";\n?>';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateR(inputText, linkInput, fileInput) {
+            var code = 'cat("' + inputText + '")';
+            if (linkInput) {
+                code += '\n\n# Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n# File data:\n# ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateRuby(inputText, linkInput, fileInput) {
+            var code = 'puts "' + inputText + '"';
+            if (linkInput) {
+                code += '\n\n# Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n# File data:\n# ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateMatlab(inputText, linkInput, fileInput) {
+            var code = 'disp("' + inputText + '");';
+            if (linkInput) {
+                code += '\n\n% Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n% File data:\n% ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateTypeScript(inputText, linkInput, fileInput) {
+            var code = 'console.log("' + inputText + '");';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateScala(inputText, linkInput, fileInput) {
+            var code = 'object Main extends App {\n    println("' + inputText + '")\n}';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateSQL(inputText, linkInput, fileInput) {
+            var code = 'SELECT "' + inputText + '";';
+            if (linkInput) {
+                code += '\n\n-- Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n-- File data:\n-- ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generateNoSQL(inputText, linkInput, fileInput) {
+            var code = '{\n    "text": "' + inputText + '"';
+            if (linkInput) {
+                code += ',\n    "link": "' + linkInput + '"';
+            }
+            if (fileInput) {
+                code += ',\n    "file": {\n        "name": "' + fileInput.name + '",\n        "size": ' + fileInput.size + '\n    }';
+            }
+            code += '\n}';
+            return code;
+        }
+
+        function generateRust(inputText, linkInput, fileInput) {
+            var code = 'fn main() {\n    println!("' + inputText + '");\n}';
+            if (linkInput) {
+                code += '\n\n// Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n// File data:\n// ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function generatePerl(inputText, linkInput, fileInput) {
+            var code = 'print "' + inputText + '";';
+            if (linkInput) {
+                code += '\n\n# Link: ' + linkInput;
+            }
+            if (fileInput) {
+                code += '\n\n# File data:\n# ' + fileInput.name + ' - ' + fileInput.size + ' bytes';
+            }
+            return code;
+        }
+
+        function displayCode(code, language) {
+            var codeOutput = document.getElementById('codeOutput');
+            codeOutput.innerHTML = '<pre><code class="language-' + language + '">' + code + '</code></pre>';
+            Prism.highlightAll();
+        }
+
+        function copyCode() {
+            var codeOutput = document.getElementById('codeOutput').querySelector('code');
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(codeOutput);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+        }
+    </script>
+</body>
+</html>
